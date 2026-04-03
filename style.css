@@ -1,16 +1,89 @@
-body {
-    font-family: Arial;
-    text-align: center;
-    background: linear-gradient(to right, #4facfe, #00f2fe);
-    color: white;
+/* 1. General Setup */
+:root {
+    --primary-color: #4facfe;
+    --bg-dark: #1a1a2e;
+    --text-light: #ffffff;
+    --sidebar-width: 300px;
 }
 
-button {
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #0f0f1b;
+    color: var(--text-light);
+}
+
+/* 2. Layout Wrapper - Using Flexbox */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 3. Sidebar Styling */
+.sidebar {
+    width: var(--sidebar-width);
+    background: #16213e;
+    border-right: 1px solid #2e2e48;
+    padding: 20px;
+}
+
+.sidebar h2 span { color: var(--primary-color); }
+
+.lesson-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.lesson-list li {
     padding: 15px;
-    font-size: 18px;
-    border: none;
-    background: white;
-    color: black;
+    margin-bottom: 10px;
+    background: #1a1a2e;
+    border-radius: 8px;
     cursor: pointer;
-    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.lesson-list li.active {
+    border-left: 4px solid var(--primary-color);
+    background: #252545;
+}
+
+/* 4. Main Content Area */
+.main-content {
+    flex-grow: 1;
+    padding: 40px;
+}
+
+.video-container {
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 20px;
+}
+
+video {
+    width: 100%; /* Makes video fill its container */
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* 5. RESPONSIVE DESIGN (The Phone Logic) */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column; /* Stacks sidebar on top of video */
+    }
+
+    .sidebar {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .lesson-list li {
+        font-size: 14px;
+        padding: 10px;
+    }
 }
