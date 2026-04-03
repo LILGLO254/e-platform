@@ -1,55 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduStream | My E-Learning Platform</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduStream | E-Learning Platform</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 <body>
 
-    <div class="container">
-        <aside class="sidebar">
-            <div class="logo">
-                <h2>Edu<span>Stream</span></h2>
-            </div>
-            <nav class="lesson-list">
-                <h3>Course Content</h3>
-                <ul id="playlist">
-                    <li class="active" onclick="changeVideo('vid1.mp4', 'Introduction to HTML')">
-                        <span class="status">✔</span> 1. Introduction to HTML
-                    </li>
-                    <li onclick="changeVideo('vid2.mp4', 'Styling with CSS')">
-                        <span class="status"></span> 2. Styling with CSS
-                    </li>
-                    <li onclick="changeVideo('vid3.mp4', 'JavaScript Basics')">
-                        <span class="status"></span> 3. JavaScript Basics
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+  <!-- TOP NAVBAR -->
+  <nav class="navbar">
+    <button class="hamburger" id="hamburger" onclick="toggleSidebar()" aria-label="Menu">&#9776;</button>
+    <div class="nav-logo">Edu<span>Stream</span></div>
+    <div class="nav-actions">
+      <button class="btn-upload-nav" onclick="openUploadModal()">&#8679; Upload Assets</button>
+      <div class="avatar" title="Student">S</div>
+    </div>
+  </nav>
 
-        <main class="main-content">
-            <header>
-                <h1 id="current-lesson-title">Introduction to HTML</h1>
-                <button class="btn-complete">Mark as Complete</button>
-            </header>
+  <div class="app-container">
 
-            <div class="video-container">
-                <video id="main-video" controls poster="https://via.placeholder.com/800x450">
-                    <source src="assets/videos/intro.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3>Course Content</h3>
+        <span class="progress-label" id="progress-label">0% complete</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+      </div>
+      <ul class="playlist" id="playlist"></ul>
+      <div class="sidebar-footer">
+        <button class="btn-manage" onclick="openUploadModal()">&#9881; Manage Assets</button>
+      </div>
+    </aside>
 
-            <section class="description">
-                <h3>About this lesson</h3>
-                <p id="lesson-desc">In this lesson, you will learn the fundamental structure of a web page using HTML tags.</p>
-            </section>
-        </main>
+    <!-- OVERLAY for mobile sidebar close -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <div class="video-wrap">
+        <div class="video-box">
+          <video id="main-video" controls playsinline style="display:none;">
+            <source id="video-src" src="" type="video/mp4" />
+          </video>
+          <div class="video-placeholder" id="video-placeholder">
+            <div class="placeholder-icon">&#9654;</div>
+            <p>Select a lesson to begin</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson-header">
+        <div class="lesson-header-text">
+          <h1 id="lesson-title">Welcome to EduStream</h1>
+          <p id="lesson-meta" class="lesson-meta">Select a lesson from the sidebar to start</p>
+        </div>
+        <button class="btn-complete" id="btn-complete" onclick="markComplete()">&#10003; Mark Complete</button>
+      </div>
+
+      <section class="lesson-desc-box">
+        <h4>About this lesson</h4>
+        <p id="lesson-desc">This platform lets you upload your own videos, thumbnails, and icons. Click <strong>Upload Assets</strong> in the top bar to get started, then add lessons using the sidebar.</p>
+      </section>
+
+      <section class="courses-section">
+        <h2>Course Lessons</h2>
+        <div class="courses-grid" id="courses-grid"></div>
+        <p class="empty-hint" id="empty-hint">No lessons yet. Add lessons in <code>script.js</code> or use the asset uploader above.</p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- UPLOAD MODAL OVERLAY -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeUploadModal()"></div>
+
+  <!-- UPLOAD MODAL -->
+  <div class="modal" id="upload-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <h3 id="modal-title">Manage Assets</h3>
+      <button class="modal-close" onclick="closeUploadModal()" aria-label="Close">&times;</button>
     </div>
 
-    <script src="script.js"></script>
+    <div class="upload-tabs">
+      <button class="tab-btn active" onclick="switchTab('videos', this)">&#127909; Videos</button>
+      <button class="tab-btn"       onclick="switchTab('images', this)">&#128444; Images</button>
+      <button class="tab-btn"       onclick="switchTab('icons',  this)">&#9733; Icons</button>
+    </div>
+
+    <div class="tab-content active" id="tab-videos">
+      <div class="drop-zone" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event,'video')">
+        <div class="drop-icon">&#127909;</div>
+        <p>Drag &amp; drop MP4 / WebM videos here</p>
+        <label class="btn-browse">Browse Files
+          <input type="file" accept="video/*" multiple onchange="handleFileInput(event,'video')"/>
+        </label>
+      </div>
+      <div class="asset-list" id="asset-list-videos"></div>
+    </div>
+
+    <div class="tab-content" id="tab-images">
+      <div class="drop-zone" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event,'image')">
+        <div class="drop-icon">&#128444;</div>
+        <p>Drag &amp; drop JPG / PNG / WebP images here</p>
+        <label class="btn-browse">Browse Files
+          <input type="file" accept="image/*" multiple onchange="handleFileInput(event,'image')"/>
+        </label>
+      </div>
+      <div class="asset-list" id="asset-list-images"></div>
+    </div>
+
+    <div class="tab-content" id="tab-icons">
+      <div class="drop-zone" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event,'icon')">
+        <div class="drop-icon">&#9733;</div>
+        <p>Drag &amp; drop SVG / PNG icons here</p>
+        <label class="btn-browse">Browse Files
+          <input type="file" accept="image/svg+xml,image/png" multiple onchange="handleFileInput(event,'icon')"/>
+        </label>
+      </div>
+      <div class="asset-list" id="asset-list-icons"></div>
+    </div>
+
+    <div class="modal-footer">
+      <p id="modal-status" class="modal-status"></p>
+      <button class="btn-done" onclick="closeUploadModal()">Done</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
